@@ -39,3 +39,9 @@
 
 # debug information files
 *.dwo
+
+# other files
+*.project.pbxproj
+*.xcworkspacedata
+*.xcurserstate
+*.plist
