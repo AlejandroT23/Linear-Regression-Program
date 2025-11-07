@@ -43,5 +43,5 @@
 # other files
 *.project.pbxproj
 *.xcworkspacedata
-*.xcurserstate
+*.xcuserstate
 *.plist
