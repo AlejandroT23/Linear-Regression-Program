@@ -1,7 +1,7 @@
-//
-//  LinearRegressionModel.cpp
-//  Linear_Regression
-//
-//  Created by Alejandro Toledo on 11/6/25.
-//
+#include "LinearRegressionModel.h"
+
+LinearRegressionModel::LinearRegressionModel(double lr){
+    learnRate = lr;
+}
+//--
 
