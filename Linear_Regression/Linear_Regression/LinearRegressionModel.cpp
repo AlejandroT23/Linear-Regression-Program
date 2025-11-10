@@ -65,7 +65,7 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
 //        cout << endl;
 //    }
     
-    for (int w = 0; w < labels.size(); w++) {
+    for (int w = 0; w < features[0].size(); w++) {
         weight.push_back(0.0);
     }
     
@@ -113,6 +113,9 @@ void LinearRegressionModel::trainHelper(vector < vector < double > >& features,c
         weight = newWeights;
         trainHelper(features, labels, features[0].size());
     }
+    
+    
+    cout << "Here" << endl;
 }
 //--
 double LinearRegressionModel::predict(vector <double> &inputFeatures) {
