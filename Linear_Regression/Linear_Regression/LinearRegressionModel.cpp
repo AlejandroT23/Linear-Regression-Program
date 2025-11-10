@@ -14,8 +14,8 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
         sizeCol++;
     }
     
-    // Creates the scale data
-    for (int col = 0; col < (sizeCol-1); col++) {
+    // Creates the scale data struct
+    for (int col = 0; col < features[0].size(); col++) {
         
         scalingData sd;
         bool firstTime = true;
@@ -39,7 +39,7 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
             }
         }
         
-        sd.avg = totalVal / sizeCol;
+        sd.avg = totalVal / features.size();
         dataForCol.push_back(sd);
     }
     
@@ -57,13 +57,13 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
     }
     
     // Test print statement
-    for (int i = 0; i < features.size(); i++) {
-        for (int j = 0; j < features[i].size(); j++) {
-            cout << features[i][j] << " ";
-        }
-        
-        cout << endl;
-    }
+//    for (int i = 0; i < features.size(); i++) {
+//        for (int j = 0; j < features[i].size(); j++) {
+//            cout << features[i][j] << " ";
+//        }
+//        
+//        cout << endl;
+//    }
     
     for (int w = 0; w < labels.size(); w++) {
         weight.push_back(0.0);
@@ -72,16 +72,16 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
     trainHelper(features, labels, sizeCol);
     
     //-- Issues
-    for (int i = 0; i < weight.size(); i++) {
-        cout << weight[i] << endl;
-    }
+//    for (int i = 0; i < weight.size(); i++) {
+//        cout << weight[i] << endl;
+//    }
 }
 //--
 void LinearRegressionModel::trainHelper(vector < vector < double > >& features,const vector < double >& labels, int size_col) {
     
     vector < double > newWeights;
     
-    for (int c = 0; c < size_col; c++) {
+    for (int c = 0; c < features[0].size(); c++) {
         
         double areaBox = 0.0;
         
@@ -102,18 +102,39 @@ void LinearRegressionModel::trainHelper(vector < vector < double > >& features,c
     
     int convergence_check = 0;
     
+    // FIX WEIGHT SIZE!!!!
     for (int i = 0; i < weight.size(); i++) {
-        if (abs(newWeights[i] - weight[i]) <= .0001) {
+        if (abs(newWeights[i] - weight[i]) <= .00001) {
             convergence_check++;
         }
     }
     
     if (convergence_check != weight.size()) {
         weight = newWeights;
-        trainHelper(features, labels, size_col);
+        trainHelper(features, labels, features[0].size());
     }
 }
-
+//--
+double LinearRegressionModel::predict(vector <double> &inputFeatures) {
+    double result = 0.0;
+    
+    for (int i = 0; i < inputFeatures.size(); i++) {
+        inputFeatures[i] = ((inputFeatures[i] - dataForCol[i].avg) / (dataForCol[i].max - dataForCol[i].min));
+    }
+    
+    inputFeatures.insert(inputFeatures.begin(), 1.0);
+    
+//    for (int row = 0; row < features.size(); row++) {
+//        features[row].insert(features[row].begin(), 1.0);
+//    }
+    
+    for (int i = 0; i < weight.size(); i++) {
+        result = result + (inputFeatures[i] * weight[i]);
+//        cout << result << endl;
+    }
+    
+    return result;
+}
 
 //LIST OF WHAT NEEDS TO BE DONE
 //1. INITIALIZE UPDATED WEIGHT VECTOR FOR NEW WEIGHTS IN LOOP

@@ -9,10 +9,6 @@ public:
     void train(vector < vector < double > >& features, const vector < double >& labels);
     double predict(vector < double >& inputFeatures);
 private:
-    void trainOneFeatureHelper(vector < double >& features, vector < double >& labels, vector < double >& weights, double weight);
-    void trainMultiFeatureHelper(vector < vector < double > >& features, vector < vector < double > >& weights, double weight);
-    
-    
     void trainHelper(vector < vector < double > >& features, const vector < double >& labels, int sizeCol);
     
     struct scalingData {
