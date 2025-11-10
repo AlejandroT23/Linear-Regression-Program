@@ -65,37 +65,52 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
         cout << endl;
     }
     
-    // train
-}
-
-
-
-
-
-//-- CHANGE THIS
-void LinearRegressionModel::trainOneFeatureHelper(vector < double >& features, vector < double >& label, vector < double >& weights, double weight) {
-    
-    // Are we just calling the weights from the vector, meaning we don't need to 
-    
-    double areaOfBox = 0;
-    
-    for (int i = 0; i < features.size(); i++) {
-        
-        // CHANGE THIS NAMES
-        double singleError = (((weight * features[i]) - label[i]) * features[i]);
-        areaOfBox = areaOfBox + singleError;
+    for (int w = 0; w < labels.size(); w++) {
+        weight.push_back(0.0);
     }
-     
-    double newWeight = weight - (learnRate * areaOfBox);
-    weights.push_back(newWeight);
     
+    trainHelper(features, labels, sizeCol);
     
-    // Check if the weight is close to the slope (0.0001 difference)
-    // CHANGE BEFORE TEST
-    if (weight > 0) {
+    //-- Issues
+    for (int i = 0; i < weight.size(); i++) {
+        cout << weight[i] << endl;
+    }
+}
+//--
+void LinearRegressionModel::trainHelper(vector < vector < double > >& features,const vector < double >& labels, int size_col) {
+    
+    vector < double > newWeights;
+    
+    for (int c = 0; c < size_col; c++) {
         
-    } else {
-        trainOneFeatureHelper(features, label, weights, newWeight);
+        double areaBox = 0.0;
+        
+        for (int r = 0; r < features.size(); r++) {
+            // CHANGE THIS NAMES
+            
+            double feature = features[r][c];
+            
+            // I believe the error is here
+            double singleError = (((weight[c] * feature) - labels[r]) * feature);
+            areaBox = areaBox + singleError;
+        }
+        
+        // check to ensure this works
+        double newWeight = (weight[c] - learnRate * (areaBox / features.size()));
+        newWeights.push_back(newWeight);
+    }
+    
+    int convergence_check = 0;
+    
+    for (int i = 0; i < weight.size(); i++) {
+        if (abs(newWeights[i] - weight[i]) <= .0001) {
+            convergence_check++;
+        }
+    }
+    
+    if (convergence_check != weight.size()) {
+        weight = newWeights;
+        trainHelper(features, labels, size_col);
     }
 }
 

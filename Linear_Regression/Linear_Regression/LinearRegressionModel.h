@@ -12,6 +12,9 @@ private:
     void trainOneFeatureHelper(vector < double >& features, vector < double >& labels, vector < double >& weights, double weight);
     void trainMultiFeatureHelper(vector < vector < double > >& features, vector < vector < double > >& weights, double weight);
     
+    
+    void trainHelper(vector < vector < double > >& features, const vector < double >& labels, int sizeCol);
+    
     struct scalingData {
         double min = 0;
         double max = 0;
@@ -21,4 +24,5 @@ private:
     double learnRate = 0.0;
     vector < scalingData > dataForCol;
     vector < double > weight;
+//    vector < double > newWeights;
 };
