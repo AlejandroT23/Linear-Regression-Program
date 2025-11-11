@@ -9,7 +9,7 @@ public:
     void train(vector < vector < double > >& features, const vector < double >& labels);
     double predict(vector < double >& inputFeatures);
 private:
-    void trainHelper(vector < vector < double > >& features, const vector < double >& labels, int sizeCol);
+    void trainHelper(vector < vector < double > >& features, const vector < double >& labels);
     
     struct scalingData {
         double min = 0;
@@ -20,5 +20,4 @@ private:
     double learnRate = 0.0;
     vector < scalingData > dataForCol;
     vector < double > weight;
-//    vector < double > newWeights;
 };

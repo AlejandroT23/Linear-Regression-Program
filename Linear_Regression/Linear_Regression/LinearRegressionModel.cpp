@@ -5,16 +5,7 @@ LinearRegressionModel::LinearRegressionModel(double lr){
 }
 //--
 void LinearRegressionModel::train(vector < vector < double > >& features, const vector < double >& labels) {
-    
-    int sizeCol = 0;
-    
-    // Gets the length for scaling
-    // This only
-    for (int i = 0; i < features.size(); i++) {
-        sizeCol++;
-    }
-    
-    // Creates the scale data struct
+    // Creates the scale data struct and gets statistics based on columns
     for (int col = 0; col < features[0].size(); col++) {
         
         scalingData sd;
@@ -43,8 +34,7 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
         dataForCol.push_back(sd);
     }
     
-    // Scales the data
-    // Zeros are printed as 0 instead of 0.0
+    // Scales the data for training
     for (int i = 0; i < features.size(); i++) {
         for (int j = 0; j < features[i].size(); j++) {
             features[i][j] = ((features[i][j] - dataForCol[j].avg) / (dataForCol[j].max - dataForCol[j].min));
@@ -56,28 +46,16 @@ void LinearRegressionModel::train(vector < vector < double > >& features, const 
         features[row].insert(features[row].begin(), 1.0);
     }
     
-    // Test print statement
-//    for (int i = 0; i < features.size(); i++) {
-//        for (int j = 0; j < features[i].size(); j++) {
-//            cout << features[i][j] << " ";
-//        }
-//        
-//        cout << endl;
-//    }
-    
+    // Creates the weight vector
     for (int w = 0; w < features[0].size(); w++) {
         weight.push_back(0.0);
     }
     
-    trainHelper(features, labels, sizeCol);
-    
-    //-- Issues
-//    for (int i = 0; i < weight.size(); i++) {
-//        cout << weight[i] << endl;
-//    }
+    // helper function that allows us to recurse through function until convergence is met
+    trainHelper(features, labels);
 }
 //--
-void LinearRegressionModel::trainHelper(vector < vector < double > >& features,const vector < double >& labels, int size_col) {
+void LinearRegressionModel::trainHelper(vector < vector < double > >& features,const vector < double >& labels) {
     
     vector < double > newWeights;
     
@@ -86,11 +64,11 @@ void LinearRegressionModel::trainHelper(vector < vector < double > >& features,c
         double areaBox = 0.0;
         
         for (int r = 0; r < features.size(); r++) {
-            // CHANGE THIS NAMES
+            
             
             double feature = features[r][c];
             
-            // I believe the error is here
+            // Gradient Expression math is done here
             double singleError = (((weight[c] * feature) - labels[r]) * feature);
             areaBox = areaBox + singleError;
         }
@@ -102,20 +80,18 @@ void LinearRegressionModel::trainHelper(vector < vector < double > >& features,c
     
     int convergence_check = 0;
     
-    // FIX WEIGHT SIZE!!!!
+    // Checks if the weights hits a convergence
     for (int i = 0; i < weight.size(); i++) {
         if (abs(newWeights[i] - weight[i]) <= .00001) {
             convergence_check++;
         }
     }
     
+    // If all the weights reach a convergence
     if (convergence_check != weight.size()) {
         weight = newWeights;
-        trainHelper(features, labels, features[0].size());
+        trainHelper(features, labels);
     }
-    
-    
-    cout << "Here" << endl;
 }
 //--
 double LinearRegressionModel::predict(vector <double> &inputFeatures) {
@@ -127,19 +103,9 @@ double LinearRegressionModel::predict(vector <double> &inputFeatures) {
     
     inputFeatures.insert(inputFeatures.begin(), 1.0);
     
-//    for (int row = 0; row < features.size(); row++) {
-//        features[row].insert(features[row].begin(), 1.0);
-//    }
-    
     for (int i = 0; i < weight.size(); i++) {
         result = result + (inputFeatures[i] * weight[i]);
-//        cout << result << endl;
     }
     
     return result;
 }
-
-//LIST OF WHAT NEEDS TO BE DONE
-//1. INITIALIZE UPDATED WEIGHT VECTOR FOR NEW WEIGHTS IN LOOP
-//2. USE OLD WEIGHT TO CALCULATE NEW ONE
-//3. CHECK FOR CONVERGENCE - IF YES, STOP, IF NOT, RECURSION
